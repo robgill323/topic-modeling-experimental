@@ -138,7 +138,10 @@ if uploaded_file is not None:
             st.warning("Large files may cause memory errors on Streamlit Cloud. Try a smaller file or fewer reviews.")
         topic_model = ReviewsTopicModel(reviews, review_ids)
         st.subheader("Elbow Plot (for topic selection)")
-        topic_model.elbow_plot()
+        if len(reviews) < 2:
+            st.warning("Need at least 2 samples to plot the elbow curve.")
+        else:
+            topic_model.elbow_plot()
         num_topics = st.number_input("Number of topics", min_value=2, max_value=80, value=5)
         @st.cache_data(show_spinner=False)
         def get_topic_model_results(reviews, review_ids, num_topics):
