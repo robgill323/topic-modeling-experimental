@@ -66,7 +66,11 @@ class ReviewsTopicModel:
         X.index = reviews_cleaned
         return X
     def elbow_plot(self):
-        cluster_sizes = list(range(1, 81))
+        if len(self.X) < 2:
+            st.warning("Need at least 2 samples to plot the elbow curve.")
+            return
+        max_clusters = min(80, len(self.X))
+        cluster_sizes = list(range(1, max_clusters + 1))
         cluster_scores = []
         for n in cluster_sizes:
             kmeans = KMeans(n_clusters=n)
@@ -130,6 +134,8 @@ if uploaded_file is not None:
         reviews_df = reviews_df[reviews_df['Transcript'].str.strip().str.lower() != 'not available']
         reviews = reviews_df['Transcript'].tolist()
         review_ids = reviews_df['ID'].tolist()
+        if len(reviews) > 500:
+            st.warning("Large files may cause memory errors on Streamlit Cloud. Try a smaller file or fewer reviews.")
         topic_model = ReviewsTopicModel(reviews, review_ids)
         st.subheader("Elbow Plot (for topic selection)")
         topic_model.elbow_plot()
