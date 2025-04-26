@@ -10,10 +10,20 @@ from nltk import word_tokenize
 from nltk.corpus import stopwords
 import nltk
 import io
+import os
 
-# Download NLTK data
-nltk.download('punkt')
-nltk.download('stopwords')
+# NLTK data path fix for Streamlit Cloud
+nltk_data_path = os.path.join(os.path.dirname(__file__), "nltk_data")
+nltk.data.path.append(nltk_data_path)
+
+def safe_nltk_download(resource):
+    try:
+        nltk.data.find(resource)
+    except LookupError:
+        nltk.download(resource.split('/')[-1], download_dir=nltk_data_path)
+
+safe_nltk_download('tokenizers/punkt')
+safe_nltk_download('corpora/stopwords')
 
 # Load models
 @st.cache_resource
