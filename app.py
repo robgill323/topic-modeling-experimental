@@ -116,7 +116,9 @@ if uploaded_file is not None:
     if 'Transcript' not in df.columns or 'ID' not in df.columns:
         st.error("No 'Transcript' or 'ID' column found in the uploaded file.")
     else:
+        # Filter out transcripts that only say 'Not Available'
         reviews_df = df[['ID', 'Transcript']].dropna()
+        reviews_df = reviews_df[reviews_df['Transcript'].str.strip().str.lower() != 'not available']
         reviews = reviews_df['Transcript'].tolist()
         review_ids = reviews_df['ID'].tolist()
         topic_model = ReviewsTopicModel(reviews, review_ids)
