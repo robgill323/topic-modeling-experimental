@@ -11,7 +11,8 @@ from nltk.corpus import stopwords
 import nltk
 import io
 import os
-
+import os
+nltk.data.path.append(os.path.join(os.path.dirname(__file__), "nltk_data"))
 # NLTK data path fix for Streamlit Cloud
 nltk_data_path = os.path.join(os.path.dirname(__file__), "nltk_data")
 nltk.data.path.append(nltk_data_path)
