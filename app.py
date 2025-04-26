@@ -1,6 +1,11 @@
+import os
+os.environ["STREAMLIT_SERVER_FILE_WATCHER_TYPE"] = "none"
+
 import streamlit as st
 import pandas as pd
 import numpy as np
+
+
 import matplotlib.pyplot as plt
 import tensorflow_hub as hub
 import tensorflow as tf
@@ -83,6 +88,9 @@ class ReviewsTopicModel:
         ax.set_title('Elbow Plot')
         st.pyplot(fig)
     def create_topics(self, num_topics):
+        if num_topics > len(self.X):
+            st.error(f"Number of topics ({num_topics}) cannot be greater than number of samples ({len(self.X)}).")
+            return
         kmeans = KMeans(n_clusters=num_topics)
         kmeans.fit(self.X)
         topics_df = self.X.copy()
@@ -142,7 +150,12 @@ if uploaded_file is not None:
             st.warning("Need at least 2 samples to plot the elbow curve.")
         else:
             topic_model.elbow_plot()
-        num_topics = st.number_input("Number of topics", min_value=2, max_value=80, value=5)
+        num_topics = st.number_input(
+            "Number of topics",
+            min_value=2,
+            max_value=min(80, len(reviews)),
+            value=min(5, len(reviews))
+        )
         @st.cache_data(show_spinner=False)
         def get_topic_model_results(reviews, review_ids, num_topics):
             model = ReviewsTopicModel(reviews, review_ids)
