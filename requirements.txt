@@ -7,3 +7,4 @@ tensorflow-hub
 transformers
 scikit-learn
 nltk
+torch
