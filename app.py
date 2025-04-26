@@ -11,17 +11,15 @@ from nltk.corpus import stopwords
 import nltk
 import io
 import os
-import os
-nltk.data.path.append(os.path.join(os.path.dirname(__file__), "nltk_data"))
-# NLTK data path fix for Streamlit Cloud
-nltk_data_path = os.path.join(os.path.dirname(__file__), "nltk_data")
-nltk.data.path.append(nltk_data_path)
+# Set NLTK data path for both local and cloud
+NLTK_DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "nltk_data")
+nltk.data.path.insert(0, NLTK_DATA_PATH)
 
 def safe_nltk_download(resource):
     try:
         nltk.data.find(resource)
     except LookupError:
-        nltk.download(resource.split('/')[-1], download_dir=nltk_data_path)
+        nltk.download(resource.split('/')[-1], download_dir=NLTK_DATA_PATH)
 
 safe_nltk_download('tokenizers/punkt')
 safe_nltk_download('corpora/stopwords')
